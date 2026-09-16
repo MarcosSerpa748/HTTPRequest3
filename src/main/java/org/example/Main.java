@@ -1,17 +1,35 @@
 package org.example;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
-    public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+import com.google.gson.Gson;
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
-        }
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+public class Main {
+    public static void main(String[] args) throws IOException, InterruptedException {
+        JsonPlaceholder objeto = new JsonPlaceholder(
+                "Meu primeiro POST",
+                "Meu nome é Marcos e esse é o meu primeiro POST em um servidor externo.",
+                5);
+
+        Gson gson = new Gson();
+
+        String objetoConvertidoEmJson = gson.toJson(objeto);
+
+        HttpClient cliente = HttpClient.newHttpClient();
+
+        HttpRequest requisicao = HttpRequest
+                .newBuilder()
+                .uri(URI.create("https://jsonplaceholder.typicode.com/posts"))
+                .header("Content-Type","application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(objetoConvertidoEmJson))
+                .build();
+
+        HttpResponse<String> resposta = cliente.send(requisicao,HttpResponse.BodyHandlers.ofString());
+
+        System.out.println("Código de estatus da nossa requisição POST:"+resposta.statusCode());
+        System.out.println("Meu json criado guardado no servidor:"+resposta.body());
     }
 }

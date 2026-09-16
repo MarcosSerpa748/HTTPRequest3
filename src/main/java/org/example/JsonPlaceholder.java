@@ -1,4 +1,4 @@
 package org.example;
 
-public record JsonPlaceholder() {
+public record JsonPlaceholder(String title,String body,Integer userId) {
 }
